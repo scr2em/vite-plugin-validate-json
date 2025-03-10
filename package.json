@@ -18,5 +18,8 @@
 		"tsup": "8.4.0",
 		"typescript": "^5.5.3"
 	},
-	"private": false
+	"private": false,
+	"repository": "https://github.com/scr2em/vite-plugin-validate-json",
+	"readme": "https://github.com/scr2em/vite-plugin-validate-json#README.md",
+	"author": "Mohamed M. Abdelgwad"
 }
