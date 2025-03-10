@@ -1,0 +1,22 @@
+{
+	"name": "vite-plugin-validate-json",
+	"version": "0.0.2",
+	"description": "A Vite plugin to validate a set of paths to JSON files.",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsup",
+		"prepare": "npm run build"
+	},
+	"dependencies": {
+		"glob": "11.0.1",
+		"json-dup-key-validator": "1.0.3"
+	},
+	"devDependencies": {
+		"@types/node": "22.13.10",
+		"@types/json-dup-key-validator": "^1.0.2",
+		"tsup": "8.4.0",
+		"typescript": "^5.5.3"
+	},
+	"private": false
+}
