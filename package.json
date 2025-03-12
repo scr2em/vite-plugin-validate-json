@@ -1,7 +1,22 @@
 {
 	"name": "vite-plugin-validate-json",
-	"version": "0.0.3",
+	"version": "0.0.4",
+	"private": false,
 	"description": "A Vite plugin to validate a set of paths to JSON files.",
+	"repository": "https://github.com/scr2em/vite-plugin-validate-json",
+	"readme": "https://github.com/scr2em/vite-plugin-validate-json#README.md",
+	"author": "Mohamed M. Abdelgwad",
+	"keywords": [
+		"vite",
+		"vite-plugin",
+		"json",
+		"validation",
+		"json-validation",
+		"duplicate-keys",
+		"json-schema",
+		"watch-mode",
+		"development-tools"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"files": [
@@ -25,9 +40,5 @@
 		"tsup": "8.4.0",
 		"typescript": "^5.5.3",
 		"vitest": "3.0.8"
-	},
-	"private": false,
-	"repository": "https://github.com/scr2em/vite-plugin-validate-json",
-	"readme": "https://github.com/scr2em/vite-plugin-validate-json#README.md",
-	"author": "Mohamed M. Abdelgwad"
+	}
 }
