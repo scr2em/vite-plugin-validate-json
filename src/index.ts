@@ -1,7 +1,4 @@
-import fs from "fs";
 import { sync } from "glob";
-import j from "json-dup-key-validator";
-import path from "path";
 import { logger } from "./logger";
 import { validateKeys } from "./validate-keys";
 
@@ -12,6 +9,7 @@ import type {
   ValidateJsonConfig,
   ValidationResult,
 } from "./types";
+import { logMissingKeys, validateJsonFile } from "./utils";
 
 /**
  * Creates a Vite plugin that validates JSON files in specified paths
@@ -58,16 +56,10 @@ export function validateJsonPaths(config: ValidateJsonConfig): Plugin {
 
       // Validate each JSON file
       for (const file of files) {
-        const content = await validateJsonFile(file, allowDuplicateKeys);
+        await validateJsonFile(file, allowDuplicateKeys);
 
         if (keyValidation.enabled) {
           logger.info(`🔑 Checking translation keys...`);
-
-          const jsonCache = new Map<string, any>();
-
-          /* parse JSONs to objects*/
-          const json = JSON.parse(content);
-          jsonCache.set(file, json);
 
           const keyConfig: KeyValidationConfig = {
             patterns: keyValidation.patterns,
@@ -118,38 +110,4 @@ function collectJsonFiles(patterns: string[], ignoreFiles: string[]): string[] {
   return files;
 }
 
-async function validateJsonFile(
-  filePath: string,
-  allowDuplicateKeys: boolean
-): Promise<string> {
-  const content = await fs.promises.readFile(filePath, "utf-8");
-
-  // Check for duplicate keys and validate JSON syntax
-  const error = j.validate(content, allowDuplicateKeys);
-  if (error) {
-    throw new Error(
-      `❌ Error while validating ${filePath} with error ${error}`
-    );
-  } else {
-    logger.success(`Validated ${path.basename(filePath)}`);
-  }
-
-  return content;
-}
-
-function logMissingKeys(missingKeys: string[], logLevel?: LogLevel): void {
-  logger.warn(`Found ${missingKeys.length} missing keys in non-strict mode`);
-
-  if (logLevel !== "silent") {
-    // Log a subset of missing keys if there are many
-    const keysToShow =
-      missingKeys.length > 10 ? missingKeys.slice(0, 10) : missingKeys;
-
-    keysToShow.forEach((key) => logger.warn(`  Missing key: ${key}`));
-
-    if (missingKeys.length > 10) {
-      logger.warn(`\t\t...and ${missingKeys.length - 10} more`);
-    }
-  }
-}
 export * from "./types";

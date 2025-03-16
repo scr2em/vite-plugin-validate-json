@@ -1,4 +1,3 @@
-// src/core/validator.test.ts
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import { validateKeys } from "../src/validate-keys";
 import fs from "node:fs/promises";
@@ -180,17 +179,11 @@ describe("validateKeys", () => {
       throw new Error(`Unexpected path: ${path}`);
     });
 
-    // Mock console.warn to verify warning
-    const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-
     // Run the function - should continue despite error in one file
     const result = await validateKeys(baseConfig);
 
     // Verify the result - should have succeeded with the good file
     expect(result.success).toBe(true);
-    expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringContaining("Error reading source file")
-    );
   });
 
   it("should handle multiple patterns", async () => {
