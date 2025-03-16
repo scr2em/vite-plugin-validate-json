@@ -6,6 +6,7 @@ A Vite plugin that validates all JSON files in specified paths.
 
 - ✅ Validate JSON syntax in your project
 - ✅ Check for duplicate keys in JSON files
+- ✅ Check for keys existence in JSON files, from your source code
 - ✅ Configurable paths with glob pattern support
 - ✅ Ability to ignore specific files
 - ✅ TypeScript support
@@ -25,15 +26,24 @@ pnpm add -D vite-plugin-validate-json
 Add the plugin to your `vite.config.js` or `vite.config.ts`:
 
 ```js
-import { defineConfig } from 'vite';
-import { validateJsonPaths } from 'vite-plugin-validate-json';
+import { defineConfig } from "vite";
+import { validateJsonPaths } from "vite-plugin-validate-json";
 
 export default defineConfig({
   plugins: [
     validateJsonPaths({
-      paths: ['src/**/*.json', 'public/**/*.json'],
+      paths: ["src/**/*.json", "public/**/*.json"],
       allowDuplicateKeys: false, // default: false
-      ignoreFiles: ['node_modules/**/*', 'dist/**/*'], // optional
+      ignoreFiles: ["node_modules/**/*", "dist/**/*"], // optional
+      keyValidation: {
+        patterns: [
+          { regex: "t\\(['\"](.*?)['\"]\\)" },
+          { regex: "i18nKey=['\"]([^'\"]*)['\"]", separator: ":" },
+        ],
+        sourceFiles: ["src/**/*.{js,jsx,ts,tsx}"],
+        separator: ".", // Single separator for everything
+        strict: true,
+      },
     }),
     // other plugins...
   ],
@@ -42,11 +52,11 @@ export default defineConfig({
 
 ## Configuration Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `paths` | `string[]` | - | Glob patterns for JSON files to validate |
-| `allowDuplicateKeys` | `boolean` | `false` | Set to `true` to allow duplicate keys in JSON files |
-| `ignoreFiles` | `string[]` | `[]` | Files to ignore during validation |
+| Option               | Type       | Default | Description                                         |
+| -------------------- | ---------- | ------- | --------------------------------------------------- |
+| `paths`              | `string[]` | -       | Glob patterns for JSON files to validate            |
+| `allowDuplicateKeys` | `boolean`  | `false` | Set to `true` to allow duplicate keys in JSON files |
+| `ignoreFiles`        | `string[]` | `[]`    | Files to ignore during validation                   |
 
 ## How It Works
 

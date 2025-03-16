@@ -1,6 +1,7 @@
-import {sync} from 'glob'
-import fs from 'fs'
-import j from 'json-dup-key-validator'
+import { sync } from "glob";
+import fs from "fs";
+import j from "json-dup-key-validator";
+import { validateKeys } from "./validate-keys";
 
 /**
  * Creates a Vite plugin that validates JSON files in specified paths
@@ -12,43 +13,48 @@ import j from 'json-dup-key-validator'
  * @returns {import('vite').Plugin} Vite plugin
  */
 export function validateJsonPaths(config: {
-	paths: string[];
-	allowDuplicateKeys?: boolean,
-	ignoreFiles?: string[];
-
+  paths: string[];
+  allowDuplicateKeys?: boolean;
+  ignoreFiles?: string[];
 }) {
-	const {paths, allowDuplicateKeys = false, ignoreFiles = []} = config
+  const { paths, allowDuplicateKeys = false, ignoreFiles = [] } = config;
 
-	return {
-		name: 'vite-plugin-validate-json',
+  return {
+    name: "vite-plugin-validate-json",
 
-		async buildStart() {
-			// Find all JSON files matching the glob patterns
+    async buildStart() {
+      // Find all JSON files matching the glob patterns
 
-			const files = []
-			for (const pattern of paths) {
-				const matches = sync(pattern, {ignore: ignoreFiles, nodir: true})
+      const files = [];
+      const jsonCache = new Map<string, any>();
 
-				files.push(...matches)
-			}
+      for (const pattern of paths) {
+        const matches = sync(pattern, { ignore: ignoreFiles, nodir: true });
 
+        files.push(...matches);
+      }
 
-			// Validate each JSON file
-			for (const file of files) {
-				const content = await fs.promises.readFile(file, 'utf-8')
+      // Validate each JSON file
+      for (const file of files) {
+        const content = await fs.promises.readFile(file, "utf-8");
 
-				// We'll check the raw content for duplicate keys since JSON.parse
-				// silently uses the last occurrence of duplicate keys
-				const error = j.validate(content, allowDuplicateKeys)
-				if (error) {
-					throw new Error(`❌ Error while validating ${file} with error ${error} `)
-				} else {
-					console.log(`✅ Validated ${file} JSON files successfully.`)
+        // We'll check the raw content for duplicate keys since JSON.parse
+        // silently uses the last occurrence of duplicate keys
+        const error = j.validate(content, allowDuplicateKeys);
+        if (error) {
+          throw new Error(
+            `❌ Error while validating ${file} with error ${error} `
+          );
+        } else {
+          console.log(`✅ Validated ${file} JSON files successfully.`);
+        }
+        const json = JSON.parse(content);
+        jsonCache.set(file, json);
 
-				}
-
-			}
-
-		},
-	}
+        validateKeys({
+          jsonFiles: files,
+        });
+      }
+    },
+  };
 }
