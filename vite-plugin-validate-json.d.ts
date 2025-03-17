@@ -1,8 +1,8 @@
 declare module "vite-plugin-validate-json" {
-  import { Plugin } from "vite";
+  import { type Plugin } from "vite";
 
   export interface Pattern {
-    regex: string;
+    regex: string | RegExp;
     separator?: string;
   }
 

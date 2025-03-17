@@ -1,11 +1,11 @@
 import { logger } from "./logger";
-import type { KeyValidationConfig, ValidationResult } from "./types";
 import {
   createValidationResult,
   extractJsonKeys,
   extractSourceKeys,
   findMissingKeys,
 } from "./utils";
+import type { KeyValidationConfig, ValidationResult } from "./types";
 
 /**
  * Validates translation keys found in source files against JSON translation files

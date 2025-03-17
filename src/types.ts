@@ -3,7 +3,7 @@
  */
 export interface Pattern {
   /** Regular expression to match translation keys, with capturing group */
-  regex: string;
+  regex: string | RegExp;
   /** Optional custom separator used in this pattern (if different from default) */
   separator?: string;
 }

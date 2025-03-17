@@ -1,15 +1,14 @@
 import { sync } from "glob";
 import { logger } from "./logger";
 import { validateKeys } from "./validate-keys";
+import { logMissingKeys, validateJsonFile } from "./utils";
 
 import type { Plugin } from "vite";
 import type {
   KeyValidationConfig,
-  LogLevel,
   ValidateJsonConfig,
   ValidationResult,
 } from "./types";
-import { logMissingKeys, validateJsonFile } from "./utils";
 
 /**
  * Creates a Vite plugin that validates JSON files in specified paths

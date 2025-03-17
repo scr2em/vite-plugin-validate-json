@@ -2,8 +2,8 @@ import { sync } from "glob";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { logger } from "./logger";
-import type { LogLevel, Pattern, ValidationResult } from "./types";
 import j from "json-dup-key-validator";
+import type { LogLevel, Pattern, ValidationResult } from "./types";
 
 export async function extractSourceKeys(
   sourcePatterns: string[],
@@ -125,7 +125,13 @@ export function extractKeysFromSource(
   defaultSeparator: string
 ): void {
   for (const { regex, separator = defaultSeparator } of patterns) {
-    const patternRegex = new RegExp(regex, "g");
+    const patternRegex =
+      typeof regex === "string"
+        ? new RegExp(regex, "g")
+        : new RegExp(
+            regex.source,
+            regex.flags + (regex.flags.includes("g") ? "" : "g")
+          );
     let match;
 
     while ((match = patternRegex.exec(content)) !== null) {

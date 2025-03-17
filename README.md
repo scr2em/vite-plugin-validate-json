@@ -25,7 +25,7 @@ pnpm add -D vite-plugin-validate-json
 
 Add the plugin to your `vite.config.js` or `vite.config.ts`:
 
-```js
+```ts
 import { defineConfig } from "vite";
 import { validateJsonPaths } from "vite-plugin-validate-json";
 
@@ -37,14 +37,22 @@ export default defineConfig({
       ignoreFiles: ["node_modules/**/*", "dist/**/*"], // optional
       keyValidation: {
         patterns: [
+          // Using string pattern
           { regex: "t\\(['\"](.*?)['\"]\\)" },
+          // Using RegExp object
+          { regex: /i18nKey=['"](.*?)['"]/, separator: ":" },
+          // Using RegExp with flags
+          {
+            regex: new RegExp("useTranslation\\(['\"](.*?)['\"]\\)", "i"),
+            separator: "/",
+          },
           { regex: "i18nKey=['\"]([^'\"]*)['\"]", separator: ":" },
         ],
         sourceFiles: ["src/**/*.{js,jsx,ts,tsx}"],
         separator: ".", // Single separator for everything
         strict: true,
       },
-    }),
+    })
     // other plugins...
   ],
 });
